@@ -1,0 +1,58 @@
+<div class="main-search-container">
+    <form action="/api/shoe" method="post">
+        <div class="inner-container search-container">
+            <p class="search-title">Search Shoes</p>
+            <div class="inner-content">
+                <input autofocus name='shoe_name' type="text" placeholder="Enter shoe name...">
+            </div>
+            <div class="inner-content">
+                <input name="shoe_brand" type="text" placeholder="Enter shoe brand...">
+            </div>
+            {{!-- Dropdown gender --}}
+            <div class="inner-content">
+                <select name="gender">
+                    <option>Select Gender</option>
+                    <option name="gender" value="male">Male</option>
+                    <option name="gender" value="female">Female</option>
+                </select>
+            </div>
+            <div class="inner-content">
+                <select name="colors">
+                    <option>Select color</option>
+                    <option name="color" value="white">White</option>
+                    <option name="color" value="black">Black</option>
+                    <option name="color" value="brown">Brown</option>
+                    <option name="color" value="light brown">light Brown</option>
+                    <option name="color" value="pink">Pink</option>
+                    <option name="color" value="mix colors">Mix Colors</option>
+                </select>
+            </div>
+            <div class="inner-content">
+                R
+                <input name="shoe_price" type="number" step={0.5} placeholder="Enter shoe price..." min='1'>
+            </div>
+            <div class="inner-content">
+                {{!-- Size --}}
+                <input name="shoe_size" placeholder='Enter shoe size..' type="number" min='1'>
+            </div>
+            <button type="submit">Search</button>
+        </div>
+    </form>
+    <div class="product-container">
+        {{#each allShoes}}
+        <div class="card">
+            <img class="product-image" src="data:text/html;base64,{{image}}" alt="product" />
+            <div class="description">
+                <p>Name: {{name}}</p>
+                <p> brand: {{brand}}</p>
+                <div class="prices">
+                    <p>Old Price: {{old_price}}</p>
+                    <p>price: {{price}}</p>
+                </div>
+                <p class="stock">{{inStock in_stock}}</p>
+                <p>rates: {{rating}}</p>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>

@@ -1,0 +1,240 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script&family=PT+Sans&family=Poppins:wght@200&family=Source+Code+Pro&display=swap');
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Source Code Pro', monospace;
+  font-size: 15px;
+}
+:root{
+  --primary-cl: #ffb648;
+  --secondary-cl: rgb(75, 75, 75);
+  --tertiary-cl: rgb(253, 86, 114);
+  --tertiary-two: rgb(179, 179, 179);
+  --bg-cl: rgb(0, 0, 0);
+}
+
+.main-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 100vw;
+  height: 100vh;
+}
+.container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 600px;
+}
+.inner-container{
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+}
+.header{
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: space-between;
+  justify-content: center;
+  height: 80px;
+  background-color:white;
+  width: 100%;
+  z-index: 1;
+}
+
+.content{
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+}
+.content p{
+  margin: 5px 0;
+  color: rgb(65, 65, 65);
+}
+
+p.title{
+  font-size: 50px;
+  border-bottom: 1px solid rgb(53, 53, 53);
+  width: 250px;
+}
+.inner-content{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(53, 53, 53);
+  border-bottom: 1px solid rgb(173, 173, 173);
+}
+input, select, textarea{
+  margin: 2px 0;
+  padding: 10px;
+  border: none;
+  /* border-bottom: 1px solid gray; */
+}
+
+input:focus, select:focus, textarea:focus{
+  border: none;
+  outline: none;
+}
+
+input::placeholder{
+  font-size: 15px;
+}
+button{
+  padding: 10px;
+  margin: 10px 0;
+  cursor: pointer;
+  cursor: pointer;
+  border: 1px solid var(--primary-cl);
+  background-color: var(--primary-cl);
+  color:  var(--bg-cl);
+  transition: .2s ease;
+  width: 100%;
+}
+button:hover, select:hover, input[type='date']:hover{
+  color:  white;
+  border: 1px solid var(--secondary-cl);
+  background-color: var(--secondary-cl);;
+}
+
+select{
+  border: 1px solid var(--primary-cl);
+  background-color: var(--primary-cl);
+  cursor: pointer;
+  width: 200px;
+  outline: none;
+  transition: .2s ease;
+}
+
+
+option{
+  color: black;
+}
+.header-container{
+  display: flex;
+  align-items: center;
+  border-radius: 30%;
+  padding: 0 20px;
+}
+.logo{
+}
+.logo-image{
+  height: 50px;
+  width: 50px;
+  object-fit: contain;
+  transform: rotate(45deg);
+  border-top: 1px solid var(--primary-cl);
+}
+.s, .c{
+  font-size: 40px;
+font-family: 'Dancing Script', cursive;
+}
+.s{
+  color: var(--secondary-cl);
+  border-bottom: 1px solid var(--secondary-cl);
+}
+.c{
+  border-radius: 100px;
+  /* background-color: var(--tertiary-cl); */
+  color: var(--primary-cl);
+  border-bottom: 1px solid var(--primary-cl);
+  /* border-left: 2px solid var(--secondary-cl); */
+}
+
+.line{
+  width: 2px;
+  height: 100px;
+  background-color: var(--tertiary-cl);
+}
+
+.search-container{
+  display: flex;
+  justify-content: center;
+  flex: 1;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-right: 1px solid var(--secondary-cl);
+}
+p.search-title{
+  font-size: 20px;
+  border-bottom: 1px solid rgb(53, 53, 53);
+  width: 250px;
+}
+
+.product-image{
+  height: 140px;
+  width: 240px;
+  object-fit: cover;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+}
+
+.product-container{
+  margin-top: 180px;
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.card{
+  width: 242px;
+  height: 120 px;
+  margin: 20px;
+  border: 1px solid var(--secondary-cl);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.prices{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.description{
+  padding: 0 10px;
+}
+
+input[type="date"]{
+  background-color: var(--primary-cl);
+  cursor: pointer;
+  border: 1px solid var(--primary-cl);
+}
+.display-image{
+  width: 150px;
+  position: fixed;
+  left:0;
+  top: 50%;
+  margin-left: 100px;
+  object-fit: contain;
+}
+p.label-title{
+  color: var(--bg-cl);
+  font-weight: bold;
+}
+
+.calendar{
+  display: flex;
+  flex-direction: column;
+  text-align: start;
+  align-items: flex-start;
+  justify-content: space-between;;
+}
+.calendars{
+  flex-direction: column;
+}
+.calendar-container{
+  display: flex;
+  justify-content: space-between;
+  background-color: rgb(245, 245, 245);
+  width: 100%;
+}
