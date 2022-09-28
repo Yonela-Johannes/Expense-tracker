@@ -1,4 +1,8 @@
 const ExpensesDb = (db) => {
+    const storeCategory = async (category) => {
+        const result = await db.manyOrNone('INSERT INTO categories(category) VALUES ($1);', [category])
+        return [result]
+    }
     const storeUser = async (name, last_name, email,) => {
         const result = await db.manyOrNone('INSERT INTO users (first_name, last_name, email) VALUES ($1, $2, $3);', [name, last_name, email])
         return [result]
@@ -26,6 +30,7 @@ const ExpensesDb = (db) => {
         return await db.manyOrNone('select * from categories')
     }
     return {
+        storeCategory,
         storeUser,
         getUser,
         getUserByName,
