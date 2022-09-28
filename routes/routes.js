@@ -54,6 +54,9 @@ const Routes = (expenseDb, expensesFE) => {
     const postSignin = async (req, res) => {
         const { email } = req.body
         const user = await expenseDb.getUser(email)
+        if (user == undefined) {
+            res.redirect('/api/signup')
+        }
         const user_name = user.first_name.toLowerCase()
         res.redirect(`/api/expenses/${user_name}`)
     }
@@ -86,9 +89,11 @@ const Routes = (expenseDb, expensesFE) => {
         console.log(category)
         const categories = await expenseDb.getCategories()
         const expenses = await expenseDb.getUserExpenses(name)
+        const totalAmount = await expenseDb.getTotalAmount(name)
         res.render('all_expenses', {
             name,
             categories,
+            totalAmount,
             helpers: {
                 // dateFormatter: (date) => {
                 //     let setDate = ''
@@ -112,14 +117,19 @@ const Routes = (expenseDb, expensesFE) => {
     const postAllExpenses = async (req, res) => {
         const { name } = req.params
         const { category } = req.body
-        console.log('This Categoryy::::', category)
+        let getCategory = []
+        if (category == '') {
+            getCategory = await expenseDb.getCategories()
+        }
         const categories = await expenseDb.getCategories()
         const expenses = await expenseDb.getUserExpenses(name)
-        const getCategory = expenses.filter(cat => cat.category == category)
+        getCategory = expenses.filter(cat => cat.category == category)
+        const totalAmount = await expenseDb.getTotalAmount(name)
         res.render('all_expenses', {
             name,
             categories,
             getCategory,
+            totalAmount,
             helpers: {
                 dateFormatter: (date) => {
                     let setDate = ''

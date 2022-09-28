@@ -25,6 +25,10 @@ const ExpensesDb = (db) => {
         const tables = await db.manyOrNone('SELECT * FROM expenses LEFT JOIN categories ON categories_id = categories.id JOIN users on user_id = users.id WHERE first_name = $1;', [name])
         return tables
     }
+    const getTotalAmount = async (name) => {
+        const tables = await db.oneOrNone('SELECT SUM(amount) AS total_amount FROM expenses LEFT JOIN categories ON categories_id = categories.id JOIN users on user_id = users.id WHERE first_name = $1;', [name])
+        return tables
+    }
 
     const getCategories = async () => {
         return await db.manyOrNone('select * from categories')
@@ -37,6 +41,7 @@ const ExpensesDb = (db) => {
         getCategories,
         storeExpenses,
         getUserExpenses,
+        getTotalAmount
     }
 }
 

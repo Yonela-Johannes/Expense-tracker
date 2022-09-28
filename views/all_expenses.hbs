@@ -1,8 +1,12 @@
 <div class="inner-container">
-    <p class="title">Expenses</p>
+    <p class="title">Expenses
+
+    <p>
+        R {{totalAmount.total_amount}}
+    </p>
+    </p>
     <form action="/api/expenses/{{name}}/all" method="post">
         <div class="categories">
-            <button>All</button>
             {{#each categories}}
             <button name="category" class="{{setActive category}}" value="{{category}}"
                 type="submit">{{category}}</button>
@@ -48,6 +52,6 @@
 
 {{!-- "/api/expenses/{{name}}/all" --}}
 
-            <div class="inner-content">
-                {{!-- <input name="new_category" class="category" type="text" placeholder="Add new category..."> --}}
-            </div>
+{{!-- <div class="inner-content">
+    <input name="new_category" class="category" type="text" placeholder="Add new category...">
+</div> --}}
