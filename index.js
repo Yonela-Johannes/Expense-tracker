@@ -50,6 +50,8 @@ app.use(flash())
 app.get('/', routes.getWelcome)
 app.post('/', routes.postWelcome)
 
+app.get('/get_code/:name', routes.getCode)
+
 app.get('/api/expenses/:name', routes.getExpenses)
 app.post('/api/expenses/:name', routes.postExpenses)
 
@@ -64,7 +66,7 @@ app.post('/api/expenses/:name/all', routes.postAllExpenses)
 
 
 
-const port = process.env.PORT || 2000
+const port = process.env.PORT || 4000
 app.listen(port, () => {
     console.log('Your app is running on port: ', port)
 })

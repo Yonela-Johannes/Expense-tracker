@@ -1,3 +1,7 @@
+const moment = require("moment")
+const ShortUniqueId = require('short-unique-id');
+const uid = new ShortUniqueId({ length: 8 });
+
 const Routes = (expenseDb, expensesFE) => {
     const getWelcome = async (req, res) => {
         res.render('welcome', {
@@ -6,8 +10,23 @@ const Routes = (expenseDb, expensesFE) => {
     }
     const postWelcome = async (req, res) => {
         const { name } = req.body
-        console.log(req.body)
-        res.redirect('welcome')
+        const existUser = await expenseDb.getUserByName(name)
+        if (existUser == undefined) {
+            res.redirect('api/signup')
+        }
+        res.redirect(`/get_code/${name}`)
+    }
+
+    const getCode = async (req, res) => {
+        const { name } = req.body
+        const existUser = await expenseDb.getUserByName(name)
+        // if (existUser == undefined) {
+        //     res.redirect('api/signup')
+        // }
+        // const getCode = ()
+        res.render('get_code', {
+            uid: uid()
+        })
     }
 
     const getSignup = async (req, res) => {
@@ -24,7 +43,7 @@ const Routes = (expenseDb, expensesFE) => {
         const lastName = expensesFE.getLastName()
         const userEmail = expensesFE.getEmail()
         await expenseDb.storeUser(name, lastName, userEmail)
-        res.redirect('/api/signup')
+        res.redirect('/api/signin')
     }
 
     const getSignin = async (req, res) => {
@@ -62,26 +81,69 @@ const Routes = (expenseDb, expensesFE) => {
     }
     const getAllExpenses = async (req, res) => {
         const { name } = req.params
+        const { category } = req.body
+        console.log(req.body)
+        console.log(category)
         const categories = await expenseDb.getCategories()
         const expenses = await expenseDb.getUserExpenses(name)
-        console.log(expenses)
-
         res.render('all_expenses', {
             name,
-            categories
+            categories,
+            helpers: {
+                // dateFormatter: (date) => {
+                //     let setDate = ''
+                //     if (date.split('-')[0].length > 2) {
+                //         setDate = date.split('-').reverse().join().replaceAll(',', '-')
+                //     } else {
+                //         setDate = date
+                //     }
+                //     return moment(setDate, 'DD-MM-YYYY').format("DD-MMM")
+                // },
+                setActive: (cat) => {
+                    const active = ''
+                    // if (category.includes(cat)) {
+                    //     active = 'active'
+                    // }
+                    return active
+                }
+            }
         })
     }
     const postAllExpenses = async (req, res) => {
         const { name } = req.params
+        const { category } = req.body
+        console.log('This Categoryy::::', category)
         const categories = await expenseDb.getCategories()
-        res.render('post_expenses', {
+        const expenses = await expenseDb.getUserExpenses(name)
+        const getCategory = expenses.filter(cat => cat.category == category)
+        res.render('all_expenses', {
             name,
-            categories
+            categories,
+            getCategory,
+            helpers: {
+                dateFormatter: (date) => {
+                    let setDate = ''
+                    if (date.split('-')[0].length > 2) {
+                        setDate = date.split('-').reverse().join().replaceAll(',', '-')
+                    } else {
+                        setDate = date
+                    }
+                    return moment(setDate, 'DD-MM-YYYY').format("DD-MMM")
+                },
+                setActive: (cat) => {
+                    let active = ''
+                    if (category.includes(cat)) {
+                        active = 'active'
+                    }
+                    return active
+                }
+            }
         })
     }
     return {
         getWelcome,
         postWelcome,
+        getCode,
         getSignup,
         postSignup,
         getSignin,

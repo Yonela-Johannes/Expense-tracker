@@ -15,9 +15,6 @@
         {{!-- Dropdown gender --}}
         <div class="content">
             <div class="inner-content">
-                <input name="new_category" class="category" type="text" placeholder="Add new category...">
-            </div>
-            <div class="inner-content">
                 <select name="category">
                     <option disabled selected hidden value="">Select Category</option>
                     {{#each categories}}
@@ -27,6 +24,11 @@
             </div>
         </div>
         <button type="submit">Add Item</button>
+        <div class="link">
+            <a href="/api/expenses/{{name}}/all">
+                View All Expenses
+            </a>
+        </div>
     </form>
     <img class="display-image" src="/img/trackertwo.webp" alt='logo' />
 </div>

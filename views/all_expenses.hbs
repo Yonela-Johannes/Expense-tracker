@@ -1,6 +1,23 @@
 <div class="inner-container">
+    <p class="title">Today Expenses</p>
+    <form action="/api/expenses/{{name}}/all" method="post">
+        <div class="categories">
+            <button>All</button>
+            {{#each categories}}
+            <button name="category" class="{{setActive category}}" value="{{category}}"
+                type="submit">{{category}}</button>
+            {{/each}}
+        </div>
+    </form>
+    <div class="cat">
+        {{#each getCategory}}
+        <div class="details">
+            <p class="date">{{dateFormatter date}}</p>
+            <p class="amount">R {{amount}}</p>
+        </div>
+        {{/each}}
+    </div>
     <form action="/" method="post">
-        <p class="title">today Expenses</p>
         <div class="content calendars">
             <div class="inner-content calendar">
                 <div>
@@ -21,49 +38,9 @@
                 </div>
             </div>
         </div>
-        <p class="title">Weekly Expenses</p>
-        <div class="content calendars">
-            <div class="inner-content calendar">
-                <div>
-                    <p class="label-title">From:</p>
-                </div>
-                <div class="calendar-container">
-                    <label for="date">Date:</label>
-                    <input type="date" name="date">
-                </div>
-            </div>
-            <div class="inner-content calendar">
-                <div class="">
-                    <p class="label-title">Until:</p>
-                </div>
-                <div class="calendar-container">
-                    <label for="date">Date:</label>
-                    <input type="date" name="date">
-                </div>
-            </div>
-        </div>
-        <p class="title">Select Expenses</p>
-        <div class="content calendars">
-            <div class="inner-content calendar">
-                <div>
-                    <p class="label-title">From:</p>
-                </div>
-                <div class="calendar-container">
-                    <label for="date">Date:</label>
-                    <input type="date" name="date">
-                </div>
-            </div>
-            <div class="inner-content calendar">
-                <div class="">
-                    <p class="label-title">Until:</p>
-                </div>
-                <div class="calendar-container">
-                    <label for="date">Date:</label>
-                    <input type="date" name="date">
-                </div>
-            </div>
-        </div>
-        <button type="submit">Display</button>
     </form>
     <img class="display-image" src="/img/tracking.jpeg" alt='logo' />
+</div>
+<div class="side-container-two animate__animated animate__fadeInRight">
+
 </div>
