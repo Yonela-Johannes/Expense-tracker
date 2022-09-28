@@ -335,5 +335,8 @@ p.uid{
 a{
   text-decoration: none;
   color: black;
+}
 
+p.welcome{
+  color: white;
 }

@@ -43,7 +43,7 @@ const Routes = (expenseDb, expensesFE) => {
         const lastName = expensesFE.getLastName()
         const userEmail = expensesFE.getEmail()
         await expenseDb.storeUser(name, lastName, userEmail)
-        res.redirect('/api/signin')
+        res.redirect('/')
     }
 
     const getSignin = async (req, res) => {

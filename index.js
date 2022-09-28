@@ -51,6 +51,7 @@ app.get('/', routes.getWelcome)
 app.post('/', routes.postWelcome)
 
 app.get('/get_code/:name', routes.getCode)
+app.post('/get_code/:name', routes.getCode)
 
 app.get('/api/expenses/:name', routes.getExpenses)
 app.post('/api/expenses/:name', routes.postExpenses)
