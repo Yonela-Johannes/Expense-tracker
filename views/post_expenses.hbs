@@ -5,7 +5,7 @@
         <div class="content">
             <div class="inner-content">
                 R
-                <input name="price" type="number" step={0.5} placeholder="Enter item price..." min='1'>
+                <input name="price" type="number" value="" step={0.5} placeholder="Enter item price..." min='1'>
             </div>
             <div class="inner-content">
                 <label for="date">Date:</label>
@@ -14,11 +14,11 @@
         </div>
         {{!-- Dropdown gender --}}
         <div class="content">
-            {{!-- <div class="inner-content">
+            <div class="inner-content">
                 <div class="inner-content">
-                    <input name="new_category" class="category" type="text" placeholder="Add new category...">
+                    <input name="new_category" value="" class="category" type="text" placeholder="Add new category...">
                 </div>
-            </div> --}}
+            </div>
             <div class="inner-content">
                 <select name="category">
                     <option disabled selected hidden value="">Select Category</option>

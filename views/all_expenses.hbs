@@ -1,9 +1,22 @@
 <div class="inner-container">
-    <p class="title">Expenses
+    <div class="top-container">
+        <p class="title">All Expenses</p>
+        {{#each expenses}}
+        <div class="content">
+            <p>{{dateFormatter date}}</p>
+            <p>{{category}}</p>
+            <div class="price">
+                R
+                <p>{{amount}}</p>
+            </div>
+        </div>
+        {{/each}}
+        <p class="total">Total
 
-    <p>
-        R {{totalAmount.total_amount}}
-    </p>
+            R {{totalAmount.total_amount}}
+        </p>
+    </div>
+    <p class="title">Expenses
     </p>
     <form action="/api/expenses/{{name}}/all" method="post">
         <div class="categories">
@@ -21,20 +34,17 @@
         </div>
         {{/each}}
     </div>
-    <form action="/" method="post">
+    <div>
+        <p class="title">Expenses By date
+
+        <p>
+            R {{totalAmount.total_amount}}
+        </p>
+        </p>
         <div class="content calendars">
             <div class="inner-content calendar">
                 <div>
-                    <p class="label-title">From:</p>
-                </div>
-                <div class="calendar-container">
-                    <label for="date">Date:</label>
-                    <input type="date" name="date">
-                </div>
-            </div>
-            <div class="inner-content calendar">
-                <div class="">
-                    <p class="label-title">Until:</p>
+                    <p class="label-title">Select date:</p>
                 </div>
                 <div class="calendar-container">
                     <label for="date">Date:</label>
@@ -42,16 +52,30 @@
                 </div>
             </div>
         </div>
-    </form>
-    <img class="display-image" src="/img/tracking.jpeg" alt='logo' />
-</div>
-<div class="side-container-two animate__animated animate__fadeInRight">
+        {{!-- <form action="/" method="post">
+            <div class="content calendars">
+                <div class="inner-content calendar">
+                    <div>
+                        <p class="label-title">From:</p>
+                    </div>
+                    <div class="calendar-container">
+                        <label for="date">Date:</label>
+                        <input type="date" name="date">
+                    </div>
+                </div>
+                <div class="inner-content calendar">
+                    <div class="">
+                        <p class="label-title">Until:</p>
+                    </div>
+                    <div class="calendar-container">
+                        <label for="date">Date:</label>
+                        <input type="date" name="date">
+                    </div>
+                </div>
+            </div>
+        </form> --}}
+        <img class="display-image" src="/img/tracking.jpeg" alt='logo' />
+    </div>
+    <div class="side-container-two animate__animated animate__fadeInRight">
 
-</div>
-
-
-{{!-- "/api/expenses/{{name}}/all" --}}
-
-{{!-- <div class="inner-content">
-    <input name="new_category" class="category" type="text" placeholder="Add new category...">
-</div> --}}
+    </div>

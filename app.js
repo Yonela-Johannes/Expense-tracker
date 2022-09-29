@@ -1,6 +1,6 @@
 const moment = require('moment')
 const ExpensesFE = () => {
-    let dateTime, category = ''
+    let dateTime = ''
     let price = 0
     let name, lastName, email = ''
 
@@ -20,20 +20,12 @@ const ExpensesFE = () => {
             dateTime = moment(today).format("DD-MM-YYYY")
         }
     }
-    const setCategory = (category_input, new_category) => {
-        if (category_input) {
-            category = category_input
-        } else if (!category_input) {
-            category = new_category
-        }
-    }
 
     const getName = () => name
     const getLastName = () => lastName
     const getEmail = () => email
     const getPrice = () => price
     const getDate = () => dateTime
-    const getCategory = () => category
 
     return {
         setName,
@@ -46,8 +38,6 @@ const ExpensesFE = () => {
         getName,
         getLastName,
         getEmail,
-        setCategory,
-        getCategory
     }
 }
 

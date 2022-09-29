@@ -67,7 +67,7 @@ app.post('/api/expenses/:name/all', routes.postAllExpenses)
 
 
 
-const port = process.env.PORT || 4000
+const port = process.env.PORT || 2000
 app.listen(port, () => {
     console.log('Your app is running on port: ', port)
 })

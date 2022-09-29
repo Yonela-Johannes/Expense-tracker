@@ -69,24 +69,31 @@ const Routes = (expenseDb, expensesFE) => {
         })
     }
     const postExpenses = async (req, res) => {
+        let categoryResult = 0
         const { name } = req.params
         const { price, date, new_category, category } = req.body
         const user = await expenseDb.getUserByName(name)
         const { id } = user
         expensesFE.setPrice(price)
         expensesFE.setDate(date)
-        expensesFE.setCategory(category, new_category)
+        if (category) {
+            categoryResult = category
+        } else if (!category) {
+            await expenseDb.storeCategory(new_category)
+            const result = await expenseDb.getCategoryByName(new_category)
+            const cat_id = result.id
+            categoryResult = cat_id
+        } else if (category && new_category) {
+            categoryResult = category
+        }
+        await expenseDb.getCategories()
         const dateResult = expensesFE.getDate()
         const priceResult = expensesFE.getPrice()
-        const categoryResult = expensesFE.getCategory()
         await expenseDb.storeExpenses(id, categoryResult, dateResult, priceResult)
         res.redirect('/api/expenses/yonela')
     }
     const getAllExpenses = async (req, res) => {
         const { name } = req.params
-        const { category } = req.body
-        console.log(req.body)
-        console.log(category)
         const categories = await expenseDb.getCategories()
         const expenses = await expenseDb.getUserExpenses(name)
         const totalAmount = await expenseDb.getTotalAmount(name)
@@ -94,24 +101,25 @@ const Routes = (expenseDb, expensesFE) => {
             name,
             categories,
             totalAmount,
+            expenses,
             helpers: {
-                // dateFormatter: (date) => {
-                //     let setDate = ''
-                //     if (date.split('-')[0].length > 2) {
-                //         setDate = date.split('-').reverse().join().replaceAll(',', '-')
-                //     } else {
-                //         setDate = date
-                //     }
-                //     return moment(setDate, 'DD-MM-YYYY').format("DD-MMM")
-                // },
+                dateFormatter: (date) => {
+                    let setDate = ''
+                    if (date.split('-')[0].length > 2) {
+                        setDate = date.split('-').reverse().join().replaceAll(',', '-')
+                    } else {
+                        setDate = date
+                    }
+                    return moment(setDate, 'DD-MM-YYYY').format("DD-MMM")
+                },
                 setActive: (cat) => {
                     const active = ''
                     // if (category.includes(cat)) {
                     //     active = 'active'
                     // }
                     return active
-                }
-            }
+                },
+            },
         })
     }
     const postAllExpenses = async (req, res) => {
@@ -125,11 +133,14 @@ const Routes = (expenseDb, expensesFE) => {
         const expenses = await expenseDb.getUserExpenses(name)
         getCategory = expenses.filter(cat => cat.category == category)
         const totalAmount = await expenseDb.getTotalAmount(name)
+        // console.log(expenses)
+
         res.render('all_expenses', {
             name,
             categories,
             getCategory,
             totalAmount,
+            expenses,
             helpers: {
                 dateFormatter: (date) => {
                     let setDate = ''

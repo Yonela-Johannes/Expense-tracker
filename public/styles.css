@@ -21,7 +21,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
 }
 .container{
   display: flex;
@@ -31,9 +31,10 @@
   width: 600px;
 }
 .inner-container{
-  padding: 50px;
+  /* padding: 50px; */
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 .header{
   position: fixed;
@@ -339,4 +340,22 @@ a{
 
 p.welcome{
   color: white;
+}
+
+.price{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.top-container{
+  display: flex;
+  flex-direction: column;
+}
+.total{
+  align-self: flex-end;
+}
+
+p.total{
+  font-weight: bold;
+  color: black;
 }
