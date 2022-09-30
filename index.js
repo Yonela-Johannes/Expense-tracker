@@ -64,10 +64,10 @@ app.post('/api/signin', routes.postSignin)
 
 app.get('/api/expenses/:name/all', routes.getAllExpenses)
 app.post('/api/expenses/:name/all', routes.postAllExpenses)
+app.post('/api/expenses/:name/all/date', routes.postAllExpenses)
 
 
-
-const port = process.env.PORT || 2000
+const port = process.env.PORT || 4000
 app.listen(port, () => {
     console.log('Your app is running on port: ', port)
 })

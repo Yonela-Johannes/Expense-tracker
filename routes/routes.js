@@ -110,7 +110,7 @@ const Routes = (expenseDb, expensesFE) => {
                     } else {
                         setDate = date
                     }
-                    return moment(setDate, 'DD-MM-YYYY').format("DD-MMM")
+                    return moment(setDate, 'DD-MM-YYYY').format("ddd-DD-MMM")
                 },
                 setActive: (cat) => {
                     const active = ''
@@ -149,7 +149,7 @@ const Routes = (expenseDb, expensesFE) => {
                     } else {
                         setDate = date
                     }
-                    return moment(setDate, 'DD-MM-YYYY').format("DD-MMM")
+                    return moment(setDate, 'DD-MM-YYYY').format("ddd-DD-MMM")
                 },
                 setActive: (cat) => {
                     let active = ''

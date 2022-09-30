@@ -35,6 +35,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  min-width: 480px;
 }
 .header{
   position: fixed;
@@ -358,4 +359,19 @@ p.welcome{
 p.total{
   font-weight: bold;
   color: black;
+}
+.details{
+  display: flex;
+  align-items: center;
+}
+table {
+  border-collapse: collapse;
+}
+table, th, td {
+  border: 1px solid gray;
+  text-align: center;
+}
+
+.hide{
+  display: hidden;
 }
