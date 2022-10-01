@@ -11,15 +11,16 @@
 </div>
 <div class="side-container">
     <div class="inner-container">
-        <form action="/api/signin" method="post">
-            <p class="title">Welcome back</p>
+        <form action="/get_code/{{user.first_name}}" method="post">
+            <p class="title">Welcome</p>
+            <p class="name">{{user.first_name}}</p>
+            <p class="email">{{user.email}}</p>
             <div class="content">
                 <div class="inner-content">
-                    <input name="email" class="email" type="email" placeholder="Enter email...">
                     <input name="code" class="email" type="text" placeholder="Enter code...">
                 </div>
+                <button class='login' type="submit">Sign in</button>
             </div>
-            <button class='login' type="submit">Sign in</button>
         </form>
     </div>
 </div>

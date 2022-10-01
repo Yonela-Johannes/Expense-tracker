@@ -18,18 +18,20 @@ const Routes = (expenseDb, expensesFE) => {
     }
 
     const getCode = async (req, res) => {
-        const { name } = req.body
-        const existUser = await expenseDb.getUserByName(name)
-        // if (existUser == undefined) {
-        //     res.redirect('api/signup')
-        // }
+        const { name } = req.params
+        let user = await expenseDb.getUserByName(name)
+        if (user == undefined) {
+            res.redirect('/api/signup')
+        }
         // const getCode = ()
         res.render('get_code', {
-            uid: uid()
+            user,
+
         })
     }
 
     const getSignup = async (req, res) => {
+
         res.render('signup', {
 
         })
@@ -53,13 +55,17 @@ const Routes = (expenseDb, expensesFE) => {
     }
     const postSignin = async (req, res) => {
         const { email } = req.body
-        const user = await expenseDb.getUser(email)
-        if (user == undefined) {
-            res.redirect('/api/signup')
-        }
-        const user_name = user.first_name.toLowerCase()
-        res.redirect(`/api/expenses/${user_name}`)
+        console.log(req.params)
+        // console.log(req.body)
+        
+        // const user = await expenseDb.getUser(email)
+        // if (user == undefined) {
+        //     res.redirect('/api/signup')
+        // }
+        // const user_name = user.first_name.toLowerCase()
+        // res.redirect(`/api/expenses/${user_name}`)
     }
+
     const getExpenses = async (req, res) => {
         const { name } = req.params
         const categories = await expenseDb.getCategories()

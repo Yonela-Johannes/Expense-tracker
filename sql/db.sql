@@ -6,6 +6,7 @@ CREATE TABLE users(
     ID SERIAL PRIMARY KEY,
     first_name VARCHAR(15) NOT NULL,
     last_name VARCHAR(15) NOT NULL,
+    code varchar(5),
     email text NOT NULL
 );
 CREATE TABLE expenses(

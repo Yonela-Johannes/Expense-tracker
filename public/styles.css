@@ -60,6 +60,7 @@
 }
 
 p.title{
+  color:rgb(246, 246, 246);
   font-size: 25px;
   border-bottom: 1px solid rgb(53, 53, 53);
   width: 250px;
@@ -374,4 +375,16 @@ table, th, td {
 
 .hide{
   display: hidden;
+}
+
+p.name{
+  font-weight: bold;
+  text-transform:capitalize;
+  color: rgb(196, 196, 196);
+}
+
+p.email{
+  font-weight: bold;
+  font-size: 11px;
+  color: rgb(196, 196, 196);
 }
