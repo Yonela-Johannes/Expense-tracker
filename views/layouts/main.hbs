@@ -7,25 +7,28 @@
     <link rel="stylesheet" href="/styles.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <meta name="viewport" content="width=device-width,initial-scale=1">
+
 </head>
 
 <body>
     <div class="main-container">
-        {{!-- <div class="header">
+        <div class="header">
             <div class="header-container">
                 <div class="logo">
                     <span class="s">Expense</span>
                     <span class="c">Tracker</span>
                 </div>
-                <img class="logo-image" src="/img/logo.png" alt='logo' />
+                <img src="img/money.png" class="logo-image" alt='logo' />
             </div>
-        </div> --}}
-        <div class="container">
-            <div class="content">{{{body}}}</div>
         </div>
+        {{{body}}}
     </div>
-    {{!--
-    <script src="handler.js"></script> --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"
+        integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="/handler.js" type="module"></script>
+
 </body>
 
 </html>

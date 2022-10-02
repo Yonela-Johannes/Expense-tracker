@@ -50,22 +50,16 @@ app.use(flash())
 app.get('/', routes.getWelcome)
 app.post('/', routes.postWelcome)
 
-app.get('/get_code/:name', routes.getCode)
-app.post('/get_code/:name', routes.getCode)
+app.get('/api/get_code/:name', routes.getCode)
+app.post('/api/get_code/:name', routes.postCode)
 
 app.get('/api/expenses/:name', routes.getExpenses)
 app.post('/api/expenses/:name', routes.postExpenses)
 
 app.get('/api/signup', routes.getSignup)
 app.post('/api/signup', routes.postSignup)
-
-app.get('/api/signin', routes.getSignin)
-app.post('/api/signin', routes.postSignin)
-
-app.get('/api/expenses/:name/all', routes.getAllExpenses)
-app.post('/api/expenses/:name/all', routes.postAllExpenses)
-app.post('/api/expenses/:name/all/date', routes.postAllExpenses)
-
+app.get('/api/expenses/category/:name', routes.getCategory)
+app.post('/api/expenses/category/:name', routes.postCategory)
 
 const port = process.env.PORT || 4000
 app.listen(port, () => {
