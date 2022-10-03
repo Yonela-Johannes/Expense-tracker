@@ -1,24 +1,8 @@
 <div class="main-post-container">
-    <form action="/api/expenses/{{name}}" method="post">
-        <p class="title">Product</p>
-        <div class="content">
-            <input name="price" type="number" value="" step={0.5} placeholder="Enter item price..." min='1'>
-            <p for="date">Date:</p>
-            <input type="date" name="date">
-            <p for="date">Add Category. Not required</p>
-            <input name="new_category" value="" class="category" type="text" placeholder="Add new category...">
-            <select name="category">
-                <option disabled selected hidden value="">Select Category</option>
-                {{#each categories}}
-                <option value="{{id}}">{{category}}</option>
-                {{/each}}
-            </select>
-        </div>
-        <button type="submit">Add Item</button>
-    </form>
     <div class="post-expenses">
-        {{!-- <div class="inner-container"> --}}
-            <div class="top-container">
+        <div class="top-container">
+            <p class="title">Product</p>
+            {{!-- <div class="top-container">
                 <p class="title">All Expenses</p>
                 <table>
                     <tr>
@@ -46,21 +30,84 @@
 
                     </tr>
                 </table>
-                {{!--
             </div> --}}
+            <table>
+                <tr>
+                    <th>
+                        Category
+                    </th>
+                    <th>
+                        Total Amount
+                    </th>
+                </tr>
+                {{#each byCategory}}
+                <tr>
+                    <td>
+                        {{@key}}
+                    </td>
+                    {{#each .}}
+                    <td class="expense-amount">
+                        {{this.amount}}
+                    </td>
+                    <td class="expense-category">
+                        {{this.category}}
+                    </td>
+                    {{/each}}
+                    {{/each}}
+                </tr>
+            </table>
         </div>
         <div class="top-container">
             <p class="title">All Expenses</p>
             <canvas id="myChart" width="400" height="400"></canvas>
         </div>
     </div>
-    <div class="add_expense">
-        <button class="">Add expense</button>
-        <button class="">
-            <a href="/api/expenses/category/{{name}}">
-                Categories
-            </a>
-        </button>
-    </div>
+</div>
+<div class="buttons-container">
+    <button class="add_expense expense-button">Show Add Expense</button>
+    <button class="add_expense income-button">Show Add Income</button>
+    <button class="add_expense">
+        <a href="/api/expenses/category/{{name}}">
+            Categories
+        </a>
+    </button>
+</div>
+<div class="input-expense-container hide">
+    <form action="/api/expenses/{{name}}" method="post">
+        <p class="title">Expense</p>
+        <div class="input-container">
+            <input name="price" type="number" value="" step={0.5} placeholder="Enter item price..." min='1'>
+            <p for="date">Date:</p>
+            <input type="date" name="date">
+            <p for="date">Add Category. Not required</p>
+            <input name="new_category" value="" class="category" type="text" placeholder="Add new category...">
+            <select name="category">
+                <option disabled selected hidden value="">Select Category</option>
+                {{#each categories}}
+                <option value="{{id}}">{{category}}</option>
+                {{/each}}
+            </select>
+            <button type="submit">Add Item</button>
+        </div>
+    </form>
+</div>
+<div class="input-income-container hide">
+    <form action="/api/income/{{name}}" method="post">
+        <p class="title">Income</p>
+        <div class="input-container">
+            <input name="incomeAmount" type="number" value="" step={0.5} placeholder="Enter income" min='1'>
+            <p for="date">Date:</p>
+            <input type="date" name="incomeDate">
+            <p for="date">Add Category. Not required</p>
+            <input name="newIncome" value="" class="category" type="text" placeholder="Add new category...">
+            <select name="incomes" value="">
+                <option disabled selected hidden value="">Select Category</option>
+                {{#each credits}}
+                <option value="{{id}}">{{credit}}</option>
+                {{/each}}
+            </select>
+            <button type="submit">Add Details</button>
+        </div>
+    </form>
 </div>
 <script src="/chart.js" type="module"></script>

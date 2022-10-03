@@ -48,7 +48,6 @@ const Routes = (expenseDb, expensesFE) => {
     }
 
     const getSignup = async (req, res) => {
-
         res.render('signup', {
 
         })
@@ -62,7 +61,10 @@ const Routes = (expenseDb, expensesFE) => {
         const lastName = expensesFE.getLastName()
         const userEmail = expensesFE.getEmail()
         await expenseDb.storeUser(name, lastName, userEmail)
-        res.redirect(`${name}`)
+        const user = await expenseDb.getUserByName(name)
+        req.session.code = uid()
+        await expenseDb.storeCode(user.first_name, req.session.code)
+        res.redirect(`/api/get_code/${user.first_name}`)
     }
 
 
@@ -71,11 +73,19 @@ const Routes = (expenseDb, expensesFE) => {
         const categories = await expenseDb.getCategories()
         const expenses = await expenseDb.getUserExpenses(name)
         const totalAmount = await expenseDb.getTotalAmount(name)
+        const credits = await expenseDb.getCredits()
+        const byCategory = {}
+        for (let cat of expenses.map(obj => obj.category)) {
+            const allCats = await expenseDb.byCategoryName(name, cat)
+            byCategory[cat] = [... new Set(allCats.map(obj => obj))]
+        }
         res.render('post_expenses', {
             name,
             categories,
             totalAmount,
             expenses,
+            byCategory,
+            credits,
             helpers: {
                 dateFormatter: (date) => {
                     let setDate = ''
@@ -85,13 +95,6 @@ const Routes = (expenseDb, expensesFE) => {
                         setDate = date
                     }
                     return moment(setDate, 'DD-MM-YYYY').format("ddd-DD-MMM")
-                },
-                setActive: (cat) => {
-                    const active = ''
-                    // if (category.includes(cat)) {
-                    //     active = 'active'
-                    // }
-                    return active
                 },
             },
         })
@@ -103,10 +106,13 @@ const Routes = (expenseDb, expensesFE) => {
 
         if (!price) {
             res.redirect(`${name}`)
-        } else if (!category && new_category) {
+        } else if (!category && !new_category) {
             res.redirect(`${name}`)
         } else {
             const user = await expenseDb.getUserByName(name)
+            if (!user) {
+                res.redirect(`/api/signup`)
+            }
             const { id } = user
             expensesFE.setPrice(price)
             expensesFE.setDate(date)
@@ -188,6 +194,41 @@ const Routes = (expenseDb, expensesFE) => {
             },
         })
     }
+    const postIncome = async (req, res) => {
+        let incomesResult = 0
+        const { name } = req.params
+        const { incomeAmount, incomeDate, newIncome, incomes } = req.body
+
+        if (!incomeAmount) {
+            res.redirect(`/api/expenses/${name}`)
+        } else if (!newIncome && !incomes) {
+            res.redirect(`/api/expenses/${name}`)
+        }
+        console.log('This is: ', name)
+        const user = await expenseDb.getUserByName(name)
+        if (!user) {
+            res.redirect(`/api/signup`)
+        }
+        const { id } = user
+        expensesFE.setPrice(incomeAmount)
+        expensesFE.setDate(incomeDate)
+        if (incomes) {
+            incomesResult = incomes
+        } else if (!incomes) {
+            await expenseDb.storeIncomesCategory(newIncome)
+            const result = await expenseDb.incomesByName(new_category)
+            const income_id = result.id
+            categoryResult = income_id
+        } else if (incomes && newIncome) {
+            incomesResult = incomes
+        }
+        await expenseDb.getCredits()
+        const dateResult = expensesFE.getDate()
+        const amountResult = expensesFE.getPrice()
+        await expenseDb.storeIncome(id, incomesResult, dateResult, amountResult)
+        res.redirect(`/api/expenses/${name}`)
+
+    }
     return {
         getWelcome,
         postWelcome,
@@ -198,7 +239,8 @@ const Routes = (expenseDb, expensesFE) => {
         postExpenses,
         getExpenses,
         getCategory,
-        postCategory
+        postCategory,
+        postIncome
     }
 }
 

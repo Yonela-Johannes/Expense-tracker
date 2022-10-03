@@ -40,6 +40,10 @@ const ExpensesDb = (db) => {
     const expByCategory = async (name, categoryId) => {
         return tables = await db.manyOrNone('SELECT * FROM expenses LEFT JOIN categories ON categories_id = categories.id JOIN users on user_id = users.id WHERE first_name = $1 AND categories_id = $2;', [name, categoryId])
     }
+
+    const byCategoryName = async (name, category) => {
+        return tables = await db.manyOrNone('SELECT * FROM expenses LEFT JOIN categories ON categories_id = categories.id JOIN users on user_id = users.id WHERE first_name = $1 AND category = $2;', [name, category])
+    }
     const getTotalAmount = async (name) => {
         const tables = await db.oneOrNone('SELECT SUM(amount) AS total_amount FROM expenses LEFT JOIN categories ON categories_id = categories.id JOIN users on user_id = users.id WHERE first_name = $1;', [name])
         return tables
@@ -47,6 +51,20 @@ const ExpensesDb = (db) => {
 
     const getCategories = async () => {
         return await db.manyOrNone('select * from categories')
+    }
+    const getCredits = async () => {
+        return await db.manyOrNone('select * from credits')
+    }
+    const storeIncome = async (userId, creditsId, date, amount) => {
+        await db.oneOrNone('INSERT INTO income (user_id, credits_id, date, amount) VALUES ($1, $2, $3, $4);', [userId, creditsId, date, amount])
+    }
+    const storeIncomesCategory = async (incomes) => {
+        const result = await db.manyOrNone('INSERT INTO credits(credit) VALUES ($1);', [incomes])
+        return [result]
+    }
+    const incomesByName = async (income) => {
+        const [result] = await db.manyOrNone('SELECT * FROM credits WHERE credit = $1;', [income])
+        return result
     }
     return {
         storeCode,
@@ -60,7 +78,12 @@ const ExpensesDb = (db) => {
         getUserExpenses,
         getCategoryByName,
         getTotalAmount,
-        expByCategory
+        expByCategory,
+        byCategoryName,
+        getCredits,
+        storeIncome,
+        storeIncomesCategory,
+        incomesByName
     }
 }
 

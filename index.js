@@ -56,10 +56,14 @@ app.post('/api/get_code/:name', routes.postCode)
 app.get('/api/expenses/:name', routes.getExpenses)
 app.post('/api/expenses/:name', routes.postExpenses)
 
+app.post('/api/income/:name', routes.postIncome)
+// app.post('/api/income/:name', routes.postIncome)
+
 app.get('/api/signup', routes.getSignup)
 app.post('/api/signup', routes.postSignup)
 app.get('/api/expenses/category/:name', routes.getCategory)
 app.post('/api/expenses/category/:name', routes.postCategory)
+
 
 const port = process.env.PORT || 4000
 app.listen(port, () => {

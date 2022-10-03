@@ -1,23 +1,23 @@
 const ctx = document.getElementById('myChart').getContext('2d');
 const table = document.getElementById('myChart')
-const getDate = document.querySelectorAll('.expense-date')
 const getCategory = document.querySelectorAll('.expense-category')
 const getAmount = document.querySelectorAll('.expense-amount')
 
-const allDate = []
 const allCategory = []
 const allAmount = []
 
 for (let x = 0; x < getAmount.length; x++) {
-    allDate.push(getDate[x]?.innerText)
     allCategory.push(getCategory[x]?.innerText)
     allAmount.push(Number(getAmount[x]?.innerText))
 }
 
+allAmount.push(allAmount.reduce((acc, tot) => acc + tot))
+allCategory.push('Total')
+
 const myChart = new Chart(ctx, {
     type: 'bar',
     data: {
-        labels: allDate,
+        labels: allCategory,
         datasets: [{
             label: 'Expense',
             data: allAmount,
