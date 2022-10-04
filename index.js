@@ -63,7 +63,8 @@ app.get('/api/signup', routes.getSignup)
 app.post('/api/signup', routes.postSignup)
 app.get('/api/expenses/category/:name', routes.getCategory)
 app.post('/api/expenses/category/:name', routes.postCategory)
-
+app.post('/api/expenses/category/date/:name', routes.postByDate)
+app.post('/api/expenses/date/:name', routes.postByDay)
 
 const port = process.env.PORT || 4000
 app.listen(port, () => {

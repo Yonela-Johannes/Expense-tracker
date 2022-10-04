@@ -1,7 +1,7 @@
-const ctx = document.getElementById('myChart').getContext('2d');
-const table = document.getElementById('myChart')
-const getCategory = document.querySelectorAll('.expense-category')
-const getAmount = document.querySelectorAll('.expense-amount')
+const ctx = document.getElementById('myDaysChart').getContext('2d');
+const table = document.getElementById('myDaysChart')
+const getCategory = document.querySelectorAll('.expense-days--category')
+const getAmount = document.querySelectorAll('.expense-days--amount')
 
 const allCategory = []
 const allAmount = []

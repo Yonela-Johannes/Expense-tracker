@@ -18,7 +18,7 @@ const ExpensesFE = () => {
         if (date) {
             dateTime = date
         } else {
-            dateTime = moment(today).format("DD-MM-YYYY")
+            dateTime = today
         }
     }
 

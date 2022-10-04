@@ -1,0 +1,60 @@
+{{!-- <div class="main-post-container">
+    <div>
+        <div>
+            <form action="/api/expenses/category/date/{{name}}" method="post">
+                <p class="title">Select Date</p>
+                <div class="content">
+                    <p for="date">From:</p>
+                    <input type="date" name="searchDate">
+                </div>
+            </form>
+        </div>
+        <div>
+            <form action="/api/expenses/category/date/{{name}}" method="post">
+                <div class="content">
+                    <p for="date">To:</p>
+                    <input type="date" name="searchDate">
+                </div>
+                <button type="submit">Display</button>
+            </form>
+        </div>
+
+    </div>
+    <div class="post-expenses">
+        <div class="top-container">
+            <p class="title">Expenses By Date</p>
+            <table>
+                <tr>
+                    <th>Date</th>
+                    <th>Amount</th>
+                </tr>
+                {{#each getByDate}}
+                <tr>
+                    <td>
+                        {{dateFormatter @key}}
+                    </td>
+                    {{#each .}}
+                    <td class="date-amount">
+                        {{this.amount}}
+                    </td>
+                    <td class="date-category">
+                        {{this.category}}
+                    </td>
+                    {{/each}}
+                    {{/each}}
+                </tr>
+            </table>
+        </div>
+        <div class="top-container">
+            <p class="title">Date Expenses</p>
+            {{!-- <canvas id="myChartDate" width="400" height="400"></canvas> --}}
+        </div>
+    </div>
+    <div class="buttons-container">
+        <button class="add_expense">
+            <a href="/api/expenses/{{name}}">
+                Previous
+            </a>
+        </button>
+    </div>
+</div> --}}

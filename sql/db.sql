@@ -16,7 +16,7 @@ CREATE TABLE users(
 CREATE TABLE expenses(
     ID SERIAL PRIMARY KEY,
     amount INT,
-    date varchar(10),
+    date DATE,
     categories_id INT,
     user_id INT,
     FOREIGN KEY (user_id) REFERENCES users(ID) ON DELETE CASCADE,

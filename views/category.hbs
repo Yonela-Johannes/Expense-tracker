@@ -1,33 +1,35 @@
 <div class="main-post-container">
-    <form action="/api/expenses/category/{{name}}" method="post">
-        <p class="title">Select Category</p>
-        <div class="content">
-            <select name="catId" value="">
-                <option disabled selected hidden value="">Select Category</option>
-                {{#each categories}}
-                <option value="{{id}}">{{category}}</option>
-                {{/each}}
-            </select>
-        </div>
-        <button type="submit">Display</button>
-    </form>
+    <div class="top-container">
+        <form action="/api/expenses/category/{{name}}" method="post">
+            <p class="title">Select Category</p>
+            <div class="content">
+                <select name="catId" value="">
+                    <option disabled selected hidden value="">Select Category</option>
+                    {{#each categories}}
+                    <option value="{{id}}">{{category}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <button type="submit">Display</button>
+        </form>
+    </div>
     <div class="post-expenses">
         <div class="top-container">
             <p class="title">Expenses By Category</p>
             <table>
                 <tr>
-                    <th>Date</th>
                     <th>Category</th>
+                    <th>Date</th>
                     <th>Amount</th>
                 </tr>
                 {{#each catExpenses}}
                 <tr>
                     <div class="content">
-                        <td class="filter-date">
-                            {{dateFormatter date}}
-                        </td>
                         <td class="filter-category">
                             {{category}}
+                        </td>
+                        <td class="filter-date">
+                            {{dateFormatter date}}
                         </td>
                         <td class="filter-amount">
                             {{amount}}
@@ -41,7 +43,7 @@
             </table>
         </div>
         <div class="top-container">
-            <p class="title">All Expenses</p>
+            <p class="title">Categories Expenses</p>
             <canvas id="myChartTwo" width="400" height="400"></canvas>
         </div>
     </div>
@@ -53,4 +55,53 @@
         </button>
     </div>
 </div>
+<div class="main-post-container">
+    <form action="/api/expenses/category/date/{{name}}" method="post">
+        <p class="title">Select Date</p>
+        <div class="content">
+            <p for="date">Date:</p>
+            <input type="date" name="searchDate">
+        </div>
+        <button type="submit">Display</button>
+    </form>
+    <div class="post-expenses">
+        <div class="top-container">
+            <p class="title">Expenses By Date</p>
+            <table>
+                <tr>
+                    <th>Date</th>
+                    <th>Amount</th>
+                </tr>
+                {{#each getByDate}}
+                <tr>
+                    <td>
+                        {{dateFormatter @key}}
+                    </td>
+                    {{#each .}}
+                    <td class="date-amount">
+                        {{this.amount}}
+                    </td>
+                    <td class="date-category">
+                        {{this.category}}
+                    </td>
+                    {{/each}}
+                    {{/each}}
+                </tr>
+            </table>
+        </div>
+        <div class="top-container">
+            <p class="title">Date Expenses</p>
+            <canvas id="myChartDate" width="400" height="400"></canvas>
+        </div>
+    </div>
+    <div class="buttons-container">
+        <button class="add_expense">
+            <a href="/api/expenses/{{name}}">
+                Previous
+            </a>
+        </button>
+    </div>
+</div>
+
 <script src="/chartTwo.js" type="module"></script>
+<script src="/chartCategory.js" type="module"></script>

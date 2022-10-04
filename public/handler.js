@@ -3,9 +3,6 @@ const toggleIncomeButton = document.querySelector('.income-button')
 const expenseInput = document.querySelector('.input-expense-container')
 const incomeInput = document.querySelector('.input-income-container')
 
-
-
-
 const toggle = () => {
     expenseInput.classList.toggle('hide')
     if (toggleButton.innerHTML.includes('Show Add')) {

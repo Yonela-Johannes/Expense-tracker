@@ -4,7 +4,6 @@ const ExpensesDb = (db) => {
     }
     const findUserByCode = async (code) => {
         const result = await db.oneOrNone('select * from users where code = $1', [code])
-        console.log(result)
         return result
     }
     const storeCategory = async (category) => {
@@ -33,20 +32,26 @@ const ExpensesDb = (db) => {
     }
 
     const getUserExpenses = async (name) => {
-        const tables = await db.manyOrNone('SELECT * FROM expenses LEFT JOIN categories ON categories_id = categories.id JOIN users on user_id = users.id WHERE first_name = $1;', [name])
-        return tables
+        return await db.manyOrNone('SELECT * FROM expenses LEFT JOIN categories ON categories_id = categories.id JOIN users on user_id = users.id WHERE first_name = $1;', [name])
     }
 
     const expByCategory = async (name, categoryId) => {
-        return tables = await db.manyOrNone('SELECT * FROM expenses LEFT JOIN categories ON categories_id = categories.id JOIN users on user_id = users.id WHERE first_name = $1 AND categories_id = $2;', [name, categoryId])
+        return await db.manyOrNone('SELECT * FROM expenses LEFT JOIN categories ON categories_id = categories.id JOIN users on user_id = users.id WHERE first_name = $1 AND categories_id = $2;', [name, categoryId])
     }
 
     const byCategoryName = async (name, category) => {
-        return tables = await db.manyOrNone('SELECT * FROM expenses LEFT JOIN categories ON categories_id = categories.id JOIN users on user_id = users.id WHERE first_name = $1 AND category = $2;', [name, category])
+        return await db.manyOrNone('SELECT * from expenses LEFT JOIN categories ON categories_id = categories.id JOIN users on user_id = users.id WHERE first_name = $1 AND category = $2;', [name, category])
     }
     const getTotalAmount = async (name) => {
-        const tables = await db.oneOrNone('SELECT SUM(amount) AS total_amount FROM expenses LEFT JOIN categories ON categories_id = categories.id JOIN users on user_id = users.id WHERE first_name = $1;', [name])
-        return tables
+        return await db.oneOrNone('SELECT SUM(amount) AS total_amount FROM expenses LEFT JOIN categories ON categories_id = categories.id JOIN users on user_id = users.id WHERE first_name = $1;', [name])
+    }
+
+    const expensesByDate = async (name, date) => {
+        return await db.manyOrNone('SELECT * FROM expenses LEFT JOIN categories ON categories_id = categories.id JOIN users on user_id = users.id WHERE first_name = $1 AND date = $2;', [name, date])
+    }
+
+    const expensesByDuration = async (name, duration) => {
+        return await db.manyOrNone('SELECT * FROM expenses where date > (current_date - 7);', [name, duration])
     }
 
     const getCategories = async () => {
@@ -66,6 +71,15 @@ const ExpensesDb = (db) => {
         const [result] = await db.manyOrNone('SELECT * FROM credits WHERE credit = $1;', [income])
         return result
     }
+
+    const userIncome = async (name) => {
+        const tables = await db.manyOrNone('SELECT * FROM income LEFT JOIN credits ON credits_id = credits.id JOIN users on user_id = users.id WHERE first_name = $1;', [name])
+        return tables
+    }
+    const incomeByName = async (name, income) => {
+        return tables = await db.manyOrNone('SELECT * FROM income LEFT JOIN credits ON credits_id = credits.id JOIN users on user_id = users.id WHERE first_name = $1 AND credit = $2;', [name, income])
+    }
+
     return {
         storeCode,
         storeCategory,
@@ -83,7 +97,11 @@ const ExpensesDb = (db) => {
         getCredits,
         storeIncome,
         storeIncomesCategory,
-        incomesByName
+        incomesByName,
+        userIncome,
+        incomeByName,
+        expensesByDate,
+        expensesByDuration
     }
 }
 

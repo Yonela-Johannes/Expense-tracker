@@ -70,31 +70,65 @@ const Routes = (expenseDb, expensesFE) => {
 
     const getExpenses = async (req, res) => {
         const { name } = req.params
+        let { duration } = req.body
+        const user = await expenseDb.getUserByName(name)
+        if (!user) {
+            res.redirect(`/api/signup`)
+        } else if (!duration) {
+            // flash error message
+            duration = 7
+        }
         const categories = await expenseDb.getCategories()
         const expenses = await expenseDb.getUserExpenses(name)
         const totalAmount = await expenseDb.getTotalAmount(name)
-        const credits = await expenseDb.getCredits()
         const byCategory = {}
         for (let cat of expenses.map(obj => obj.category)) {
             const allCats = await expenseDb.byCategoryName(name, cat)
             byCategory[cat] = [... new Set(allCats.map(obj => obj))]
         }
+
+        console.log(byCategory)
+        // const result = []
+        // for (let x in byCategory) {
+        //     console.log(x)
+        // }
+
+
+        const credit = {}
+        const income = await expenseDb.userIncome(name)
+        for (let cred of income.map(obj => obj.credit)) {
+            const allCredits = await expenseDb.incomeByName(name, cred)
+            credit[cred] = [... new Set(allCredits.map(obj => obj))]
+        }
+        const daysDuration = await expenseDb.expensesByDuration(user.first_name, duration)
+        const credits = await expenseDb.getCredits()
+        const getAmounts = []
+        const expensesAmounts = []
+        for (let x in credit) {
+            for (let y in credit[x]) {
+                getAmounts.push(Number(credit[x][y]['amount']))
+            }
+        }
+        for (let x in expenses) {
+            expensesAmounts.push(Number(expenses[x]['amount']))
+        }
+        const total = getAmounts.reduce((acc, tot) => acc + tot, 0)
+        const totalExpenses = expensesAmounts.reduce((acc, tot) => acc + tot, 0)
         res.render('post_expenses', {
             name,
             categories,
             totalAmount,
             expenses,
             byCategory,
+            credit,
             credits,
+            income,
+            total,
+            totalExpenses,
+            days: duration,
             helpers: {
                 dateFormatter: (date) => {
-                    let setDate = ''
-                    if (date.split('-')[0].length > 2) {
-                        setDate = date.split('-').reverse().join().replaceAll(',', '-')
-                    } else {
-                        setDate = date
-                    }
-                    return moment(setDate, 'DD-MM-YYYY').format("ddd-DD-MMM")
+                    return moment(date).format("ddd-DD-MMM")
                 },
             },
         })
@@ -104,7 +138,7 @@ const Routes = (expenseDb, expensesFE) => {
         const { name } = req.params
         const { price, date, new_category, category } = req.body
 
-        if (!price) {
+        if (!price || !date) {
             res.redirect(`${name}`)
         } else if (!category && !new_category) {
             res.redirect(`${name}`)
@@ -135,32 +169,37 @@ const Routes = (expenseDb, expensesFE) => {
     }
 
     const getCategory = async (req, res) => {
-        const { catId } = req.body
+        const { catId, searchDate } = req.body
         const { name } = req.params
         const categories = await expenseDb.getCategories()
+        const user = await expenseDb.getUserByName(name)
+        if (!user) {
+            res.redirect(`/api/signup`)
+        }
         const catExpenses = await expenseDb.expByCategory(name, catId)
+        expensesFE.setDate(searchDate)
+        const dateResult = expensesFE.getDate()
+        const expenses = await expenseDb.getUserExpenses(user.first_name)
+        const getByDate = {}
+        for (let date of expenses.map(obj => obj.date)) {
+            const byDate = await expenseDb.expensesByDate(user.first_name, dateResult)
+            getByDate[date] = [...new Set(byDate.map(obj => obj))]
+        }
+        // console.log('DATE ====: ==" ', dateResult)
+        // console.log(getByDate)
+
         res.render('category', {
+            getByDate,
             name,
             categories,
             catExpenses,
             helpers: {
                 dateFormatter: (date) => {
-                    let setDate = ''
-                    if (date.split('-')[0].length > 2) {
-                        setDate = date.split('-').reverse().join().replaceAll(',', '-')
-                    } else {
-                        setDate = date
-                    }
-                    return moment(setDate, 'DD-MM-YYYY').format("ddd-DD-MMM")
+                    // console.log(date)
+                    // return moment(date).format("ddd-DD-MMM")
+                    return date
                 },
-                setActive: (cat) => {
-                    const active = ''
-                    // if (category.includes(cat)) {
-                    //     active = 'active'
-                    // }
-                    return active
-                },
-            },
+            }
         })
     }
     const postCategory = async (req, res) => {
@@ -168,43 +207,27 @@ const Routes = (expenseDb, expensesFE) => {
         const { name } = req.params
         const categories = await expenseDb.getCategories()
         const catExpenses = await expenseDb.expByCategory(name, catId)
-        console.log(catExpenses)
-
         res.render('category', {
             name,
             categories,
             catExpenses,
             helpers: {
                 dateFormatter: (date) => {
-                    let setDate = ''
-                    if (date.split('-')[0].length > 2) {
-                        setDate = date.split('-').reverse().join().replaceAll(',', '-')
-                    } else {
-                        setDate = date
-                    }
-                    return moment(setDate, 'DD-MM-YYYY').format("ddd-DD-MMM")
+                    // return moment(date).format("ddd-DD-MMM")
+                    return date
                 },
-                setActive: (cat) => {
-                    const active = ''
-                    // if (category.includes(cat)) {
-                    //     active = 'active'
-                    // }
-                    return active
-                },
-            },
+            }
         })
     }
     const postIncome = async (req, res) => {
         let incomesResult = 0
         const { name } = req.params
         const { incomeAmount, incomeDate, newIncome, incomes } = req.body
-
         if (!incomeAmount) {
             res.redirect(`/api/expenses/${name}`)
         } else if (!newIncome && !incomes) {
             res.redirect(`/api/expenses/${name}`)
         }
-        console.log('This is: ', name)
         const user = await expenseDb.getUserByName(name)
         if (!user) {
             res.redirect(`/api/signup`)
@@ -212,23 +235,57 @@ const Routes = (expenseDb, expensesFE) => {
         const { id } = user
         expensesFE.setPrice(incomeAmount)
         expensesFE.setDate(incomeDate)
+
         if (incomes) {
             incomesResult = incomes
-        } else if (!incomes) {
+        } else if (!incomes && newIncome) {
             await expenseDb.storeIncomesCategory(newIncome)
-            const result = await expenseDb.incomesByName(new_category)
+            const result = await expenseDb.incomesByName(newIncome)
             const income_id = result.id
             categoryResult = income_id
         } else if (incomes && newIncome) {
             incomesResult = incomes
+        } else if (!incomes && !newIncome) {
+            res.redirect(`/api/expenses/${name}`)
         }
         await expenseDb.getCredits()
         const dateResult = expensesFE.getDate()
         const amountResult = expensesFE.getPrice()
         await expenseDb.storeIncome(id, incomesResult, dateResult, amountResult)
         res.redirect(`/api/expenses/${name}`)
-
     }
+    const postByDate = async (req, res) => {
+        let incomesResult = 0
+        const { name } = req.params
+        const { searchDate } = req.body
+
+        if (!searchDate) {
+            res.redirect(`/api/expenses/category/${name}`)
+        }
+        const user = await expenseDb.getUserByName(name)
+        if (!user) {
+            res.redirect(`/api/signup`)
+        }
+        expensesFE.setDate(searchDate)
+        const dateResult = expensesFE.getDate()
+        await expenseDb.expensesByDate(user.first_name, dateResult)
+        res.redirect(`/api/expenses/category/${user.first_name}`)
+    }
+
+    const postByDay = async (req, res) => {
+        const { name } = req.params
+        let { duration } = req.body
+        const user = await expenseDb.getUserByName(name)
+        if (!user) {
+            res.redirect(`/api/signup`)
+        } else if (!duration) {
+            // flash error message
+            duration = 7
+        }
+        await expenseDb.expensesByDuration(user.first_name, duration)
+        res.redirect(`/api/expenses/${user.first_name}`)
+    }
+
     return {
         getWelcome,
         postWelcome,
@@ -240,7 +297,9 @@ const Routes = (expenseDb, expensesFE) => {
         getExpenses,
         getCategory,
         postCategory,
-        postIncome
+        postIncome,
+        postByDate,
+        postByDay
     }
 }
 

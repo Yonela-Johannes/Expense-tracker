@@ -1,23 +1,23 @@
-const ctx = document.getElementById('myChart').getContext('2d');
+const ctx = document.getElementById('myChartThree').getContext('2d');
 const table = document.getElementById('myChart')
-const getCategory = document.querySelectorAll('.expense-category')
-const getAmount = document.querySelectorAll('.expense-amount')
+const getCredit = document.querySelectorAll('.income-category')
+const getAmount = document.querySelectorAll('.income-amount')
 
-const allCategory = []
-const allAmount = []
+const credit = []
+const amount = []
 
 for (let x = 0; x < getAmount.length; x++) {
-    allCategory.push(getCategory[x]?.innerText)
-    allAmount.push(Number(getAmount[x]?.innerText))
+    credit.push(getCredit[x]?.innerText)
+    amount.push(Number(getAmount[x]?.innerText))
 }
 
 const myChart = new Chart(ctx, {
-    type: 'bar',
+    type: 'pie',
     data: {
-        labels: allCategory,
+        labels: credit,
         datasets: [{
             label: 'Expense',
-            data: allAmount,
+            data: amount,
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
