@@ -61,8 +61,6 @@ app.post('/api/income/:name', routes.postIncome)
 
 app.get('/api/signup', routes.getSignup)
 app.post('/api/signup', routes.postSignup)
-app.get('/api/expenses/category/:name', routes.getCategory)
-app.post('/api/expenses/category/:name', routes.postCategory)
 app.post('/api/expenses/category/date/:name', routes.postByDate)
 app.post('/api/expenses/date/:name', routes.postByDay)
 

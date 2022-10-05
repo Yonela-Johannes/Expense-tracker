@@ -130,71 +130,9 @@
     </div>
 
 </div>
-<div class="main-post-container">
-    <div class="top-container">
-        <form action="/api/expenses/category/{{name}}" method="post">
-            <p class="title">Select Category</p>
-            <div class="content">
-                <select name="catId" value="">
-                    <option disabled selected hidden value="">Select Category</option>
-                    {{#each categories}}
-                    <option value="{{id}}">{{category}}</option>
-                    {{/each}}
-                </select>
-            </div>
-            <button type="submit">Display</button>
-        </form>
-    </div>
-    <div class="post-expenses">
-        <div class="top-container">
-            <p class="title">Expenses By Category</p>
-            <table>
-                <tr>
-                    <th>Category</th>
-                    <th>Date</th>
-                    <th>Amount</th>
-                </tr>
-                {{#each catExpenses}}
-                <tr>
-                    <div class="content">
-                        <td class="filter-category">
-                            {{category}}
-                        </td>
-                        <td class="filter-date">
-                            {{dateFormatter date}}
-                        </td>
-                        <td class="filter-amount">
-                            {{amount}}
-                        </td>
-                    </div>
-                    {{/each}}
-                    <p class="total">Total
-                        R {{totalAmount.total_amount}}
-                    </p>
-                </tr>
-            </table>
-        </div>
-        <div class="top-container">
-            <p class="title">Categories Expenses</p>
-            <canvas id="myChartTwo" width="400" height="400"></canvas>
-        </div>
-    </div>
-    <div class="buttons-container">
-        <button class="add_expense">
-            <a href="/api/expenses/{{name}}">
-                Previous
-            </a>
-        </button>
-    </div>
-</div>
 <div class="buttons-container">
     <button class="add_expense expense-button">Show Add Expense</button>
     <button class="add_expense income-button">Show Add Income</button>
-    <button class="add_expense">
-        <a href="/api/expenses/category/{{name}}">
-            Categories
-        </a>
-    </button>
 </div>
 <div class="main-post-container">
     <div class="post-expenses">
@@ -288,5 +226,3 @@
 <script src="/daysChart.js" type="module"></script>
 <script src="/handler.js" type="module"></script>
 <script src="/chartTwo.js" type="module"></script>
-{{!--
-<script src="/chartCategory.js" type="module"></script> --}}

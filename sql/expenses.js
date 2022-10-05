@@ -14,10 +14,7 @@ const ExpensesDb = (db) => {
         const result = await db.manyOrNone('INSERT INTO users (first_name, last_name, email) VALUES ($1, $2, $3);', [name, last_name, email])
         return [result]
     }
-    const getCategoryByName = async (category) => {
-        const [result] = await db.manyOrNone('SELECT * FROM categories WHERE category = $1;', [category])
-        return result
-    }
+
     const getUserByName = async (name) => {
         const [result] = await db.manyOrNone('SELECT * FROM users WHERE first_name = $1;', [name])
         return result
@@ -38,13 +35,6 @@ const ExpensesDb = (db) => {
         return await db.manyOrNone('SELECT *, (SELECT SUM(expenses.amount) as total FROM expenses) FROM expenses LEFT JOIN categories ON categories_id = categories.id LEFT JOIN users on user_id = users.id WHERE first_name = $1;', [name])
     }
 
-    const expByCategory = async (name, categoryId) => {
-        return await db.manyOrNone('SELECT * FROM expenses LEFT JOIN categories ON categories_id = categories.id JOIN users on user_id = users.id WHERE first_name = $1 AND categories_id = $2;', [name, categoryId])
-    }
-
-    const byCategoryName = async (name, category) => {
-        return await db.manyOrNone('SELECT * from expenses LEFT JOIN categories ON categories_id = categories.id JOIN users on user_id = users.id WHERE first_name = $1 AND category = $2;', [name, category])
-    }
     const getTotalAmount = async (name) => {
         return await db.oneOrNone('SELECT SUM(amount) AS total_amount FROM expenses LEFT JOIN categories ON categories_id = categories.id JOIN users on user_id = users.id WHERE first_name = $1;', [name])
     }
@@ -56,11 +46,13 @@ const ExpensesDb = (db) => {
     const expensesByDuration = async (name, duration) => {
         return await db.manyOrNone('SELECT * FROM expenses left join users on user_id = users.id JOIN categories ON categories_id = categories.id where first_name = $1 AND date > (current_date - $2);', [name, Number(duration)])
     }
-
+    const categoryByName = async (category) => {
+        const [result] = await db.manyOrNone('SELECT * FROM categories WHERE category = $1;', [category])
+        return result
+    }
     const currentDay = async (duration) => {
         const count = await db.manyOrNone('select current_day from expenses')
-        console.log("count bro", !count)
-        if (!count) {
+        if (count.length == 0) {
             return await db.manyOrNone('insert into expenses(current_day) values(7);')
         }
         return await db.manyOrNone('update expenses set current_day = $1;', duration)
@@ -106,10 +98,7 @@ const ExpensesDb = (db) => {
         getCategories,
         storeExpenses,
         getUserExpenses,
-        getCategoryByName,
         getTotalAmount,
-        expByCategory,
-        byCategoryName,
         getCredits,
         storeIncome,
         storeIncomesCategory,
@@ -120,6 +109,7 @@ const ExpensesDb = (db) => {
         expensesByDuration,
         currentDay,
         getCurrentDay,
+        categoryByName
     }
 }
 
