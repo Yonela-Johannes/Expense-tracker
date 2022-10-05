@@ -31,8 +31,11 @@ const ExpensesDb = (db) => {
         await db.oneOrNone('INSERT INTO expenses (user_id, categories_id, date, amount) VALUES ($1, $2, $3, $4);', [userId, categoriesId, date, amount])
     }
 
+    // const getUserExpenses = async (name) => {
+    //     return await db.manyOrNone('SELECT first_name, last_name, user_id, amount, date, email, SUM(amount) FROM expenses LEFT JOIN categories ON categories_id = categories.id JOIN users on user_id = users.id WHERE first_name = $1 GROUP BY first_name, last_name, user_id, amount, date, email;', [name])
+    // }
     const getUserExpenses = async (name) => {
-        return await db.manyOrNone('SELECT * FROM expenses LEFT JOIN categories ON categories_id = categories.id JOIN users on user_id = users.id WHERE first_name = $1;', [name])
+        return await db.manyOrNone('SELECT *, (SELECT SUM(expenses.amount) as total FROM expenses) FROM expenses LEFT JOIN categories ON categories_id = categories.id LEFT JOIN users on user_id = users.id WHERE first_name = $1;', [name])
     }
 
     const expByCategory = async (name, categoryId) => {
@@ -51,9 +54,22 @@ const ExpensesDb = (db) => {
     }
 
     const expensesByDuration = async (name, duration) => {
-        return await db.manyOrNone('SELECT * FROM expenses where date > (current_date - 7);', [name, duration])
+        return await db.manyOrNone('SELECT * FROM expenses left join users on user_id = users.id JOIN categories ON categories_id = categories.id where first_name = $1 AND date > (current_date - $2);', [name, Number(duration)])
     }
 
+    const currentDay = async (duration) => {
+        const count = await db.manyOrNone('select current_day from expenses')
+        console.log("count bro", !count)
+        if (!count) {
+            return await db.manyOrNone('insert into expenses(current_day) values(7);')
+        }
+        return await db.manyOrNone('update expenses set current_day = $1;', duration)
+    }
+
+    const getCurrentDay = async () => {
+        const [count] = await db.manyOrNone('select current_day from expenses')
+        return count
+    }
     const getCategories = async () => {
         return await db.manyOrNone('select * from categories')
     }
@@ -101,7 +117,9 @@ const ExpensesDb = (db) => {
         userIncome,
         incomeByName,
         expensesByDate,
-        expensesByDuration
+        expensesByDuration,
+        currentDay,
+        getCurrentDay,
     }
 }
 

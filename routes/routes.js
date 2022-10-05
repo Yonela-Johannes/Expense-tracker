@@ -70,29 +70,15 @@ const Routes = (expenseDb, expensesFE) => {
 
     const getExpenses = async (req, res) => {
         const { name } = req.params
-        let { duration } = req.body
         const user = await expenseDb.getUserByName(name)
         if (!user) {
             res.redirect(`/api/signup`)
-        } else if (!duration) {
-            // flash error message
-            duration = 7
         }
+
+        const { current_day } = await expenseDb.getCurrentDay()
         const categories = await expenseDb.getCategories()
         const expenses = await expenseDb.getUserExpenses(name)
         const totalAmount = await expenseDb.getTotalAmount(name)
-        const byCategory = {}
-        for (let cat of expenses.map(obj => obj.category)) {
-            const allCats = await expenseDb.byCategoryName(name, cat)
-            byCategory[cat] = [... new Set(allCats.map(obj => obj))]
-        }
-
-        console.log(byCategory)
-        // const result = []
-        // for (let x in byCategory) {
-        //     console.log(x)
-        // }
-
 
         const credit = {}
         const income = await expenseDb.userIncome(name)
@@ -100,7 +86,7 @@ const Routes = (expenseDb, expensesFE) => {
             const allCredits = await expenseDb.incomeByName(name, cred)
             credit[cred] = [... new Set(allCredits.map(obj => obj))]
         }
-        const daysDuration = await expenseDb.expensesByDuration(user.first_name, duration)
+        // const daysDuration = await expenseDb.expensesByDuration(user.first_name, count)
         const credits = await expenseDb.getCredits()
         const getAmounts = []
         const expensesAmounts = []
@@ -119,13 +105,13 @@ const Routes = (expenseDb, expensesFE) => {
             categories,
             totalAmount,
             expenses,
-            byCategory,
             credit,
             credits,
             income,
             total,
             totalExpenses,
-            days: duration,
+            days: current_day,
+            daysDuration: 0,
             helpers: {
                 dateFormatter: (date) => {
                     return moment(date).format("ddd-DD-MMM")
@@ -207,6 +193,7 @@ const Routes = (expenseDb, expensesFE) => {
         const { name } = req.params
         const categories = await expenseDb.getCategories()
         const catExpenses = await expenseDb.expByCategory(name, catId)
+        res.redirect(`/api/expenses/${name}`)
         res.render('category', {
             name,
             categories,
@@ -227,35 +214,35 @@ const Routes = (expenseDb, expensesFE) => {
             res.redirect(`/api/expenses/${name}`)
         } else if (!newIncome && !incomes) {
             res.redirect(`/api/expenses/${name}`)
-        }
-        const user = await expenseDb.getUserByName(name)
-        if (!user) {
-            res.redirect(`/api/signup`)
-        }
-        const { id } = user
-        expensesFE.setPrice(incomeAmount)
-        expensesFE.setDate(incomeDate)
+        } else if (incomes && !newIncome || newIncome && !incomes) {
+            const user = await expenseDb.getUserByName(name)
+            if (!user) {
+                res.redirect(`/api/signup`)
+            }
+            const { id } = user
+            expensesFE.setPrice(incomeAmount)
+            expensesFE.setDate(incomeDate)
 
-        if (incomes) {
-            incomesResult = incomes
-        } else if (!incomes && newIncome) {
-            await expenseDb.storeIncomesCategory(newIncome)
-            const result = await expenseDb.incomesByName(newIncome)
-            const income_id = result.id
-            categoryResult = income_id
-        } else if (incomes && newIncome) {
-            incomesResult = incomes
-        } else if (!incomes && !newIncome) {
+            if (incomes) {
+                incomesResult = incomes
+            } else if (!incomes && newIncome) {
+                await expenseDb.storeIncomesCategory(newIncome)
+                const result = await expenseDb.incomesByName(newIncome)
+                const income_id = result.id
+                categoryResult = income_id
+            } else if (incomes && newIncome) {
+                incomesResult = incomes
+            } else if (!incomes && !newIncome) {
+                res.redirect(`/api/expenses/${name}`)
+            }
+            await expenseDb.getCredits()
+            const dateResult = expensesFE.getDate()
+            const amountResult = expensesFE.getPrice()
+            await expenseDb.storeIncome(id, incomesResult, dateResult, amountResult)
             res.redirect(`/api/expenses/${name}`)
         }
-        await expenseDb.getCredits()
-        const dateResult = expensesFE.getDate()
-        const amountResult = expensesFE.getPrice()
-        await expenseDb.storeIncome(id, incomesResult, dateResult, amountResult)
-        res.redirect(`/api/expenses/${name}`)
     }
     const postByDate = async (req, res) => {
-        let incomesResult = 0
         const { name } = req.params
         const { searchDate } = req.body
 
@@ -279,11 +266,11 @@ const Routes = (expenseDb, expensesFE) => {
         if (!user) {
             res.redirect(`/api/signup`)
         } else if (!duration) {
-            // flash error message
-            duration = 7
+            res.redirect(`/api/expenses/${user.first_name}`)
+        } else {
+            await expenseDb.currentDay(duration)
+            res.redirect(`/api/expenses/${user.first_name}`)
         }
-        await expenseDb.expensesByDuration(user.first_name, duration)
-        res.redirect(`/api/expenses/${user.first_name}`)
     }
 
     return {

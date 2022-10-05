@@ -1,39 +1,43 @@
 <div class="main-post-container">
     <div class="post-expenses">
         <div class="top-container">
-            <p class="title">Product</p>
+            <p class="title">All Expenses Details</p>
+            <div class="total-container">
+                <p class="total-text">Total:</p>
+                <p class="Total">R {{totalExpenses}}</p>
+            </div>
             <table>
                 <tr>
                     <th>
                         Category
                     </th>
                     <th>
-                        Total Amount
+                        Amount
+                    </th>
+                    <th>
+                        Date
                     </th>
                 </tr>
                 <tr>
-                    {{#each byCategory}}
-                    <th class="expense-category">
-                        {{@key}}
-                    </th>
-                    {{/each}}
-
-                </tr>
-                {{#each byCategory}}
+                    {{#each expenses}}
                 <tr>
-                    {{#each .}}
+                    <td class="expense-category">
+                        {{category}}
+                    </td>
                     <td class="expense-amount">
-                        {{this.amount}}
+                        {{amount}}
                     </td>
-                    {{!-- <td class="expense-category">
-                        {{this.category}}
-                    </td> --}}
                     <td class="expense-date">
-                        {{dateFormatter this.date}}
+                        {{dateFormatter date}}
                     </td>
-                    {{/each}}
-                    {{/each}}
                 </tr>
+                {{/each}}
+                <th>
+                    Total
+                </th>
+                <td>
+                    {{totalExpenses}}
+                </td>
             </table>
         </div>
         <div class="top-container">
@@ -100,20 +104,21 @@
                     <th>
                         Total Amount
                     </th>
+                    <th>
+                        Date
+                    </th>
                 </tr>
-                {{#each byCategory}}
+                {{#each daysDuration}}
                 <tr>
-                    <td>
-                        {{@key}}
-                    </td>
-                    {{#each .}}
-                    <td class="expense-days-amount">
-                        {{this.amount}}
-                    </td>
                     <td class="expense-days-category">
-                        {{this.category}}
+                        {{category}}
                     </td>
-                    {{/each}}
+                    <td class="expense-days-amount">
+                        {{amount}}
+                    </td>
+                    <td>
+                        {{dateFormatter date}}
+                    </td>
                     {{/each}}
                 </tr>
             </table>
@@ -125,7 +130,63 @@
     </div>
 
 </div>
-
+<div class="main-post-container">
+    <div class="top-container">
+        <form action="/api/expenses/category/{{name}}" method="post">
+            <p class="title">Select Category</p>
+            <div class="content">
+                <select name="catId" value="">
+                    <option disabled selected hidden value="">Select Category</option>
+                    {{#each categories}}
+                    <option value="{{id}}">{{category}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <button type="submit">Display</button>
+        </form>
+    </div>
+    <div class="post-expenses">
+        <div class="top-container">
+            <p class="title">Expenses By Category</p>
+            <table>
+                <tr>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                </tr>
+                {{#each catExpenses}}
+                <tr>
+                    <div class="content">
+                        <td class="filter-category">
+                            {{category}}
+                        </td>
+                        <td class="filter-date">
+                            {{dateFormatter date}}
+                        </td>
+                        <td class="filter-amount">
+                            {{amount}}
+                        </td>
+                    </div>
+                    {{/each}}
+                    <p class="total">Total
+                        R {{totalAmount.total_amount}}
+                    </p>
+                </tr>
+            </table>
+        </div>
+        <div class="top-container">
+            <p class="title">Categories Expenses</p>
+            <canvas id="myChartTwo" width="400" height="400"></canvas>
+        </div>
+    </div>
+    <div class="buttons-container">
+        <button class="add_expense">
+            <a href="/api/expenses/{{name}}">
+                Previous
+            </a>
+        </button>
+    </div>
+</div>
 <div class="buttons-container">
     <button class="add_expense expense-button">Show Add Expense</button>
     <button class="add_expense income-button">Show Add Income</button>
@@ -142,7 +203,7 @@
             <div class="bottom-container">
                 <div>
                     <div class="top-container">
-                        <p class="title">Incomes</p>
+                        <p class="title">Income</p>
                         <div class="total-container">
                             <p class="total-text">Total:</p>
                             <p class="Total">R {{total}}</p>
@@ -153,20 +214,24 @@
                                     Category
                                 </th>
                                 <th>
-                                    Amount
+                                    Amount R
+                                </th>
+                                <th>
+                                    Date
                                 </th>
                             </tr>
-                            {{#each credit}}
+                            {{#each income}}
                             <tr>
-                                <td class="income-category">
-                                    {{@key}}
+                                <td class="income-credit">
+                                    {{credit}}
                                 </td>
-                                {{#each .}}
                                 <td class="income-amount">
-                                    {{this.amount}}
+                                    {{amount}}
+                                </td>
+                                <td class="income-date">
+                                    {{dateFormatter date}}
                                 </td>
                             </tr>
-                            {{/each}}
                             {{/each}}
                         </table>
                     </div>
@@ -182,7 +247,10 @@
                                     Category
                                 </th>
                                 <th>
-                                    Amount
+                                    Amount R
+                                </th>
+                                <th>
+                                    Date
                                 </th>
                             </tr>
                             {{#each expenses}}
@@ -192,6 +260,9 @@
                                 </td>
                                 <td>
                                     {{amount}}
+                                </td>
+                                <td>
+                                    {{dateFormatter date}}
                                 </td>
                             </tr>
                             {{/each}}
@@ -216,3 +287,6 @@
 <script src="/chartLast.js" type="module"></script>
 <script src="/daysChart.js" type="module"></script>
 <script src="/handler.js" type="module"></script>
+<script src="/chartTwo.js" type="module"></script>
+{{!--
+<script src="/chartCategory.js" type="module"></script> --}}

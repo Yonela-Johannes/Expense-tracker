@@ -18,6 +18,8 @@ CREATE TABLE expenses(
     amount INT,
     date DATE,
     categories_id INT,
+    current_day INT,
+    current_category varchar(15),
     user_id INT,
     FOREIGN KEY (user_id) REFERENCES users(ID) ON DELETE CASCADE,
     FOREIGN KEY (categories_id) REFERENCES categories(ID) ON DELETE CASCADE

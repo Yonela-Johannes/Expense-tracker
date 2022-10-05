@@ -1,6 +1,6 @@
 const ctx = document.getElementById('myChartThree').getContext('2d');
 const table = document.getElementById('myChart')
-const getCredit = document.querySelectorAll('.income-category')
+const getCredit = document.querySelectorAll('.income-credit')
 const getAmount = document.querySelectorAll('.income-amount')
 
 const credit = []
