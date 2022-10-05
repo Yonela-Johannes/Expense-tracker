@@ -3,7 +3,7 @@ const ExpensesDb = (db) => {
         return await db.oneOrNone('update users set code = $2 where first_name = $1', [name, code])
     }
     const findUserByCode = async (code) => {
-        const result = await db.oneOrNone('select * from users where code = $1', [code])
+        const result = await db.manyOrNone('select * from users where code = $1', [code])
         return result
     }
     const storeCategory = async (category) => {
