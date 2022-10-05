@@ -11,7 +11,7 @@ const Routes = (expenseDb, expensesFE) => {
         const existUser = await expenseDb.getUserByName(name)
         req.session.code = uid()
         if (existUser) {
-            await expenseDb.storeCode(name, req.session.code)
+            await expenseDb.storeCode(name, req.session.code.toLowerCase())
             res.redirect(`/api/get_code/${name}`)
         } else if (existUser == undefined) {
             res.redirect('/api/signup')
@@ -27,7 +27,7 @@ const Routes = (expenseDb, expensesFE) => {
         }
         res.render('get_code', {
             user,
-            uid: user.code,
+            uid: user.code.toLowerCase(),
         })
     }
 
@@ -36,7 +36,7 @@ const Routes = (expenseDb, expensesFE) => {
         const { name } = req.params
         const { code } = req.body
         let user = await expenseDb.getUserByName(name)
-        let userByCode = await expenseDb.findUserByCode(code)
+        let userByCode = await expenseDb.findUserByCode(code.toLowerCase())
         if (!code || !name || !userByCode) {
             res.redirect(`${name}`)
         }
@@ -63,7 +63,7 @@ const Routes = (expenseDb, expensesFE) => {
         await expenseDb.storeUser(name, lastName, userEmail)
         const user = await expenseDb.getUserByName(name)
         req.session.code = uid()
-        await expenseDb.storeCode(user.first_name, req.session.code)
+        await expenseDb.storeCode(user.first_name, req.session.code.toLowerCase())
         res.redirect(`/api/get_code/${user.first_name}`)
     }
 
