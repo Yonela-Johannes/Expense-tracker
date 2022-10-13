@@ -4,17 +4,29 @@ const uid = new ShortUniqueId({ length: 5 });
 
 const Routes = (expenseDb, expensesFE) => {
     const getWelcome = async (req, res) => {
-        res.render('welcome')
+        const messages = req.flash()
+        const failed = messages ? messages?.failed : ''
+        res.render('welcome', {
+            failed,
+        })
     }
     const postWelcome = async (req, res) => {
         const { name } = req.body
-        const existUser = await expenseDb.getUserByName(name)
-        req.session.code = uid()
-        if (existUser) {
-            await expenseDb.storeCode(name, req.session.code)
-            res.redirect(`/api/get_code/${name}`)
-        } else if (existUser == undefined) {
-            res.redirect('/api/signup')
+        if (!name) {
+            req.flash('failed', 'Please enter your name!')
+            res.redirect('/')
+        } else if (typeof name !== 'string') {
+            req.flash('failed', 'Invalid input type!!')
+            res.redirect('/')
+        } else {
+            const existUser = await expenseDb.getUserByName(name)
+            req.session.code = uid()
+            if (existUser) {
+                await expenseDb.storeCode(name, req.session.code)
+                res.redirect(`/api/get_code/${name}`)
+            } else if (existUser == undefined) {
+                res.redirect('/api/signup')
+            }
         }
     }
 
@@ -22,11 +34,14 @@ const Routes = (expenseDb, expensesFE) => {
         const { name } = req.params
         let user = await expenseDb.getUserByName(name)
         req.session.code = uid()
+        const messages = req.flash()
+        const failed = messages ? messages?.failed : ''
         if (user == undefined) {
             res.redirect('/api/signup')
         }
         res.render('get_code', {
             user,
+            failed,
             uid: user.code,
         })
     }
@@ -35,25 +50,44 @@ const Routes = (expenseDb, expensesFE) => {
     const postCode = async (req, res) => {
         const { name } = req.params
         const { code } = req.body
-        let user = await expenseDb.getUserByName(name)
-        let userByCode = await expenseDb.findUserByCode(code)
-        if (!code || !name || !userByCode) {
-            res.redirect(`${name}`)
+        if (!name) {
+            res.redirect('/signup')
         }
-        else if (code == userByCode.code) {
-            res.redirect(`/api/expenses/${name}`)
-        } else if (code !== userByCode.code) {
-            res.redirect(`${name}`)
+        else {
+            let [userByCode] = await expenseDb.findUserByCode(code)
+            const storedCode = userByCode.code
+            if (!code) {
+                req.flash('failed', `${name} enter given code!`)
+                res.redirect(`${name}`)
+            } else if (code !== storedCode) {
+                req.flash('failed', `${name} incorrect code entered!`)
+                res.redirect(`${name}`)
+            } else if (code == storedCode) {
+                res.redirect(`/api/expenses/${name}`)
+            }
         }
     }
 
     const getSignup = async (req, res) => {
+        const messages = req.flash()
+        const failed = messages ? messages?.failed : ''
         res.render('signup', {
-
+            failed
         })
     }
     const postSignup = async (req, res) => {
         const { first_name, last_name, email } = req.body
+
+        if (!first_name) {
+            req.flash('failed', 'Please enter your name!!')
+            res.redirect('signup')
+        } else if (!last_name) {
+            req.flash('failed', 'Please enter your last name!!')
+            res.redirect('signup')
+        } else if (!email) {
+            req.flash('failed', 'Please enter your email!!')
+            res.redirect('signup')
+        }
         expensesFE.setName(first_name)
         expensesFE.setLastName(last_name)
         expensesFE.setEmail(email)
@@ -102,7 +136,10 @@ const Routes = (expenseDb, expensesFE) => {
         }
         const total = getAmounts.reduce((acc, tot) => acc + tot, 0)
         const totalExpenses = expensesAmounts.reduce((acc, tot) => acc + tot, 0)
+        const messages = req.flash()
+        const failed = messages ? messages?.failed : ''
         res.render('post_expenses', {
+            failed,
             name,
             categories,
             totalAmount,
@@ -126,9 +163,14 @@ const Routes = (expenseDb, expensesFE) => {
         const { name } = req.params
         const { price, date, new_category, category } = req.body
 
-        if (!price || !date) {
+        if (!price) {
+            req.flash('failed', `${name} please enter price!`)
+            res.redirect(`${name}`)
+        } else if (!date) {
+            req.flash('failed', `${name} please enter date!`)
             res.redirect(`${name}`)
         } else if (!category && !new_category) {
+            req.flash('failed', `${name} please add new or select category!`)
             res.redirect(`${name}`)
         } else {
             const user = await expenseDb.getUserByName(name)
@@ -163,8 +205,10 @@ const Routes = (expenseDb, expensesFE) => {
         const { name } = req.params
         const { incomeAmount, incomeDate, newIncome, incomes } = req.body
         if (!incomeAmount) {
+            req.flash('failed', `${name} please enter income amount!`)
             res.redirect(`/api/expenses/${name}`)
         } else if (!newIncome && !incomes) {
+            req.flash('failed', `${name} please add new or select source of income!`)
             res.redirect(`/api/expenses/${name}`)
         } else if (incomes && !newIncome || newIncome && !incomes) {
             const user = await expenseDb.getUserByName(name)
@@ -217,6 +261,7 @@ const Routes = (expenseDb, expensesFE) => {
         if (!user) {
             res.redirect(`/api/signup`)
         } else if (!duration) {
+            req.flash('failed', `${name} enter duration!`)
             res.redirect(`/api/expenses/${user.first_name}`)
         } else {
             await expenseDb.currentDay(duration)

@@ -398,3 +398,14 @@ p.code{
   font-size: 25px;
   color: white;
 }
+
+.messages{
+  position: fixed;
+  right: 0;
+  top: 0;
+  padding: 10px;
+  margin: 5 10px;
+  font-size: 14px;
+  font-weight: bold;
+  color: red;
+}

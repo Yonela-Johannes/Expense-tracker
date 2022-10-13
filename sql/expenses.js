@@ -27,10 +27,6 @@ const ExpensesDb = (db) => {
     const storeExpenses = async (userId, categoriesId, date, amount) => {
         await db.oneOrNone('INSERT INTO expenses (user_id, categories_id, date, amount) VALUES ($1, $2, $3, $4);', [userId, categoriesId, date, amount])
     }
-
-    // const getUserExpenses = async (name) => {
-    //     return await db.manyOrNone('SELECT first_name, last_name, user_id, amount, date, email, SUM(amount) FROM expenses LEFT JOIN categories ON categories_id = categories.id JOIN users on user_id = users.id WHERE first_name = $1 GROUP BY first_name, last_name, user_id, amount, date, email;', [name])
-    // }
     const getUserExpenses = async (name) => {
         return await db.manyOrNone('SELECT *, (SELECT SUM(expenses.amount) as total FROM expenses) FROM expenses LEFT JOIN categories ON categories_id = categories.id LEFT JOIN users on user_id = users.id WHERE first_name = $1;', [name])
     }

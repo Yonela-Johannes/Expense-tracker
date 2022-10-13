@@ -64,7 +64,7 @@ app.post('/api/signup', routes.postSignup)
 app.post('/api/expenses/category/date/:name', routes.postByDate)
 app.post('/api/expenses/date/:name', routes.postByDay)
 
-const port = process.env.PORT || 4000
+const port = process.env.PORT || 9000
 app.listen(port, () => {
     console.log('Your app is running on port: ', port)
 })
